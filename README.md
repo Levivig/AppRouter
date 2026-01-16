@@ -21,7 +21,7 @@ Add this package to your project:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/dimillian/AppRouter.git", from: "1.0.0")
+    .package(url: "https://github.com/Levivig/AppRouter.git", from: "1.0.0")
 ]
 ```
 
@@ -253,6 +253,7 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
 - `presentSheet(_:)` - Present a sheet
 - `dismissSheet()` - Dismiss current sheet
 - `navigate(to:)` - Navigate using a URL or URL string
+- `push(to:)` - Push URL destinations onto the current stack
 
 ### Protocols
 
@@ -441,6 +442,11 @@ struct HomeView: View {
                 let url = URL(string: "myapp://list/detail?id=789")!
                 router.navigate(to: url)
             }
+
+            Button("Push URL Destinations") {
+                let url = URL(string: "myapp://list/detail?id=789")!
+                router.push(to: url)
+            }
         }
     }
 }
@@ -464,6 +470,12 @@ struct TabContentView: View {
         }
     }
 }
+
+You can also push URL destinations on top of the current stack:
+
+```swift
+router.push(to: "myapp://list/detail?id=789")
+```
 ```
 
 ### Advanced URL Handling
