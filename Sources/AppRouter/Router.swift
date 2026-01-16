@@ -95,6 +95,18 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
     }
   }
 
+  /// Pushes destinations parsed from the URL onto the current navigation stack.
+  /// - Parameter url: The URL to push
+  /// - Returns: True if the URL was successfully routed, false otherwise
+  @discardableResult
+  public func push(to url: URL) -> Bool {
+    return URLNavigationHelper.navigate(url: url) { destinations in
+      var path = paths[selectedTab] ?? []
+      path.append(contentsOf: destinations)
+      paths[selectedTab] = path
+    }
+  }
+
   /// Navigates to a URL string by parsing its components and routing accordingly
   /// - Parameter urlString: The URL string to navigate to
   /// - Returns: True if the URL was successfully routed, false otherwise
@@ -104,5 +116,16 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
       return false
     }
     return navigate(to: url)
+  }
+
+  /// Pushes destinations parsed from the URL onto the current navigation stack.
+  /// - Parameter urlString: The URL string to push
+  /// - Returns: True if the URL was successfully routed, false otherwise
+  @discardableResult
+  public func push(to urlString: String) -> Bool {
+    guard let url = URL(string: urlString) else {
+      return false
+    }
+    return push(to: url)
   }
 }
