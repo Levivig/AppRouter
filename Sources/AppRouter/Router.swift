@@ -95,6 +95,13 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
     }
   }
 
+  /// Parses a URL into destinations without mutating navigation state.
+  /// - Parameter url: The URL to parse
+  /// - Returns: Destinations or nil if parsing fails
+  public func destinations(for url: URL) -> [Destination]? {
+    URLNavigationHelper.destinations(url: url)
+  }
+
   /// Pushes destinations parsed from the URL onto the current navigation stack.
   /// - Parameter url: The URL to push
   /// - Returns: True if the URL was successfully routed, false otherwise
@@ -116,6 +123,16 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
       return false
     }
     return navigate(to: url)
+  }
+
+  /// Parses a URL string into destinations without mutating navigation state.
+  /// - Parameter urlString: The URL string to parse
+  /// - Returns: Destinations or nil if parsing fails
+  public func destinations(for urlString: String) -> [Destination]? {
+    guard let url = URL(string: urlString) else {
+      return nil
+    }
+    return destinations(for: url)
   }
 
   /// Pushes destinations parsed from the URL onto the current navigation stack.

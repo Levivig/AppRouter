@@ -2,17 +2,12 @@ import Foundation
 
 /// Helper for shared URL navigation logic
 internal enum URLNavigationHelper {
-  /// Navigates to a URL by parsing its components and applying destinations
-  /// - Parameters:
-  ///   - url: The URL to navigate to
-  ///   - applyDestinations: Closure that applies the parsed destinations
-  /// - Returns: True if navigation was successful, false otherwise
-  static func navigate<Destination: DestinationType>(
-    url: URL,
-    applyDestinations: ([Destination]) -> Void
-  ) -> Bool {
+  /// Parses a URL into an array of destinations.
+  /// - Parameter url: The URL to parse
+  /// - Returns: Array of destinations or nil if parsing fails
+  static func destinations<Destination: DestinationType>(url: URL) -> [Destination]? {
     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-      return false
+      return nil
     }
 
     // Extract path components from host and path (e.g., myapp://detail/list)
@@ -29,7 +24,7 @@ internal enum URLNavigationHelper {
       pathComponents.append(contentsOf: pathParts)
     }
 
-    guard !pathComponents.isEmpty else { return false }
+    guard !pathComponents.isEmpty else { return nil }
 
     let queryParameters = parseQueryParameters(from: components.queryItems)
 
@@ -43,9 +38,20 @@ internal enum URLNavigationHelper {
       }
     }
 
-    guard !destinations.isEmpty else { return false }
+    return destinations.isEmpty ? nil : destinations
+  }
 
-    applyDestinations(destinations)
+  /// Navigates to a URL by parsing its components and applying destinations
+  /// - Parameters:
+  ///   - url: The URL to navigate to
+  ///   - applyDestinations: Closure that applies the parsed destinations
+  /// - Returns: True if navigation was successful, false otherwise
+  static func navigate<Destination: DestinationType>(
+    url: URL,
+    applyDestinations: ([Destination]) -> Void
+  ) -> Bool {
+    guard let parsedDestinations: [Destination] = destinations(url: url) else { return false }
+    applyDestinations(parsedDestinations)
     return true
   }
 

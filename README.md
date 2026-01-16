@@ -254,6 +254,7 @@ public final class Router<Tab: TabType, Destination: DestinationType, Sheet: She
 - `dismissSheet()` - Dismiss current sheet
 - `navigate(to:)` - Navigate using a URL or URL string
 - `push(to:)` - Push URL destinations onto the current stack
+- `destinations(for:)` - Parse a URL into destinations without mutating state
 
 ### Protocols
 
@@ -446,6 +447,12 @@ struct HomeView: View {
             Button("Push URL Destinations") {
                 let url = URL(string: "myapp://list/detail?id=789")!
                 router.push(to: url)
+            }
+
+            Button("Inspect URL Destinations") {
+                let url = URL(string: "myapp://list/detail?id=789")!
+                let destinations = router.destinations(for: url)
+                print(destinations ?? [])
             }
         }
     }
